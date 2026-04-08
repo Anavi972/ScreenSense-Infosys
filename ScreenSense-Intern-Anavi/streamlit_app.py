@@ -1,4 +1,7 @@
 import streamlit as st
+import tempfile
+import os
+# Import your logic directly
 from recommender import recommendation_system
 from report_generator import create_pdf_report 
 
@@ -15,12 +18,10 @@ with st.form("input_form"):
     submit = st.form_submit_button("Get Recommendations")
 
 if submit:
-   if submit:
-    # Call the logic directly
+    # IMPORTANT: We call the function directly, NOT via requests.post()
     summary = recommendation_system(age, gender, device, total_screen)
-    st.metric("Recommended Limit", summary['Combined Recommended Limit (hrs)'])
     
-    # 2. Display Metrics
+    # Display Results
     st.metric("Personalized Combined Limit (hrs)", summary['Combined Recommended Limit (hrs)'])
     
     st.subheader("Analysis")
@@ -29,7 +30,6 @@ if submit:
         
     st.write("### Actionable Recommendations")
     
-    # 3. Logic based on results
     recs = []
     if summary['Exceeded Combined Limit']:
         st.warning("⚠️ You have exceeded the recommended combined limit.")
@@ -42,33 +42,31 @@ if submit:
     for s in recs:
         st.write("- " + s)
 
-    # 4. Local PDF Generation
+    # Store summary in session state so the PDF button can access it without rerunning logic
+    st.session_state['summary'] = summary
+    st.session_state['inputs'] = {
+        "age": int(age), "gender": gender, "device": device,
+        "avg_daily_screen_time_hr": float(total_screen),
+        "educational_hr": float(edu), "recreational_hr": float(rec)
+    }
+
+# PDF Generation (Outside the submit form to avoid nested button issues)
+if 'summary' in st.session_state:
     st.write("---")
     if st.button("Generate PDF Report"):
-        inputs_payload = {
-            "age": int(age),
-            "gender": gender,
-            "device": device,
-            "avg_daily_screen_time_hr": float(total_screen),
-            "educational_hr": float(edu),
-            "recreational_hr": float(rec)
-        }
-        
-        # Create a temp file to store the generated PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             report_filename = tmp.name
         
-        # Call report generator directly
-        create_pdf_report(inputs_payload, summary, report_filename)
+        # Add 'recommendations' list to summary for the PDF generator
+        report_summary = st.session_state['summary'].copy()
+        report_summary['recommendations'] = ["Try reducing screen time", "Schedule DND"] # or dynamic list
         
-        # Streamlit Download Button
+        create_pdf_report(st.session_state['inputs'], report_summary, report_filename)
+        
         with open(report_filename, "rb") as f:
             st.download_button(
                 label="📄 Download Your Report",
                 data=f,
-                file_name=f"Screen_Sense_Report_{age}.pdf",
+                file_name=f"Screen_Sense_Report.pdf",
                 mime="application/pdf"
             )
-        
-        # Optional: cleanup the temp file after download button is rendered
-        os.unlink(report_filename)
