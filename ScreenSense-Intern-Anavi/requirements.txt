@@ -1,8 +1,5 @@
-fastapi
-uvicorn[standard]
-pydantic
 pandas
 numpy
 reportlab
 streamlit
-requests
+
