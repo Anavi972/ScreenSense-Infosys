@@ -5,7 +5,7 @@ from typing import Tuple
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / "data" / "Indian_Kids_Screen_Time_Cleaned.csv"
+DATA_PATH = BASE_DIR / "Indian_Kids_Screen_Time_Cleaned.csv"
 
 def load_data(path: str = DATA_PATH) -> pd.DataFrame:
     df = pd.read_csv(str(path))
