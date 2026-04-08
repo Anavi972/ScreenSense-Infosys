@@ -1,7 +1,4 @@
 import streamlit as st
-import os
-import tempfile
-# Import your logic directly from the files in your root folder
 from recommender import recommendation_system
 from report_generator import create_pdf_report 
 
@@ -18,13 +15,10 @@ with st.form("input_form"):
     submit = st.form_submit_button("Get Recommendations")
 
 if submit:
-    # 1. Direct call to recommender logic (No 'requests' needed)
-    summary = recommendation_system(
-        age=int(age),
-        gender=gender.capitalize(),
-        device=device.capitalize(),
-        screen_time=float(total_screen)
-    )
+   if submit:
+    # Call the logic directly
+    summary = recommendation_system(age, gender, device, total_screen)
+    st.metric("Recommended Limit", summary['Combined Recommended Limit (hrs)'])
     
     # 2. Display Metrics
     st.metric("Personalized Combined Limit (hrs)", summary['Combined Recommended Limit (hrs)'])
