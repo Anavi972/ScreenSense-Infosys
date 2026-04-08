@@ -1,14 +1,16 @@
-# backend/app/recommender.py
 import pandas as pd
 import numpy as np
 from typing import Tuple
 from pathlib import Path
 
+# Updated Path: Since we moved everything to the root folder, 
+# the CSV is now in the same directory as this script.
 BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / "data" / "Indian_Kids_Screen_Time_Cleaned.csv"
+DATA_PATH = BASE_DIR / "Indian_Kids_Screen_Time_Cleaned.csv"
 
-def load_data(path: str = DATA_PATH) -> pd.DataFrame:
+def load_data(path: Path = DATA_PATH) -> pd.DataFrame:
     df = pd.read_csv(str(path))
+    
     # derived columns
     df['Educational_Avg_Screen_Time_hr'] = (df['Avg_Daily_Screen_Time_hr'] /
                                            (1 + df['Educational_to_Recreational_Ratio'])).round(2)
@@ -61,7 +63,7 @@ gender_to_limit = dict(zip(AVG_SCREEN_TIME_BY_GENDER['Gender'], AVG_SCREEN_TIME_
 
 GLOBAL_MEAN = DF['Avg_Daily_Screen_Time_hr'].mean()
 
-# Helper functions (kept behavior from notebook)
+# Helper functions
 def get_age_based_limit(age: int) -> float:
     return round(age_to_limit.get(age, GLOBAL_MEAN), 2)
 
