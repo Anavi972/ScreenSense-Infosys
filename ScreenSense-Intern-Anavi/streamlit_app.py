@@ -9,7 +9,14 @@ sys.path.append(os.path.abspath("."))
 from recommender import recommendation_system
 from report_generator import create_pdf_report 
 
-st.title("📱 Screen-Sense — Interactive")
+st.set_page_config(page_title="ScreenSense", layout="wide")
+
+st.markdown("""
+# 📱 ScreenSense  
+### Smart Screen Time Analyzer & Recommendation System
+""")
+
+st.divider()
 
 # -------------------------------
 # SESSION STATE INIT
