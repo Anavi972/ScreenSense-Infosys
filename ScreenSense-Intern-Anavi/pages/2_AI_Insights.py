@@ -32,32 +32,58 @@ user_input = st.chat_input("Ask about your screen habits...")
 # -------------------------------
 # RESPONSE LOGIC (AI-LIKE)
 # -------------------------------
-def generate_response(user_input):
-    user_input = user_input.lower()
+import google.generativeai as genai
 
+# Configure Gemini
+try:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    model = genai.GenerativeModel("gemini-pro")
+    GEMINI_AVAILABLE = True
+except:
+    GEMINI_AVAILABLE = False
+
+
+def generate_response(user_input):
     screen_time = summ['Your Screen Time (hrs)']
     limit = summ['Combined Recommended Limit (hrs)']
 
-    if "reduce" in user_input or "improve" in user_input:
-        return "Try reducing screen time gradually, especially before bedtime. Start with 30 mins reduction daily."
+    # -------------------------------
+    # USE GEMINI IF AVAILABLE
+    # -------------------------------
+    if GEMINI_AVAILABLE:
+        try:
+            prompt = f"""
+            You are a smart health assistant.
 
-    elif "risk" in user_input:
+            User data:
+            Screen Time: {screen_time} hrs
+            Recommended Limit: {limit} hrs
+
+            User question: {user_input}
+
+            Give a helpful, short, and practical answer.
+            """
+
+            response = model.generate_content(prompt)
+            return response.text
+
+        except:
+            pass  # fallback below
+
+    # -------------------------------
+    # FALLBACK (IMPORTANT)
+    # -------------------------------
+    user_input_lower = user_input.lower()
+
+    if "risk" in user_input_lower:
         if screen_time > 4.5:
-            return "You are in a high-risk zone. This may affect sleep, focus, and eye health."
+            return "High risk: may affect sleep and productivity."
         elif screen_time > 3.5:
-            return "Moderate risk detected. Consider reducing usage slightly."
+            return "Moderate risk detected."
         else:
-            return "Your usage is within a safe range."
+            return "Low risk: healthy usage."
 
-    elif "recommend" in user_input:
-        return "Follow the 20-20-20 rule, reduce night usage, and take frequent breaks."
-
-    elif "score" in user_input:
-        score = max(0, 100 - (screen_time * 10))
-        return f"Your screen health score is {score}/100."
-
-    else:
-        return f"Your screen time is {screen_time} hrs vs recommended {limit} hrs. Try maintaining a balanced routine."
+    return f"Your screen time is {screen_time} hrs vs recommended {limit} hrs."
 
 # -------------------------------
 # HANDLE CHAT
