@@ -82,19 +82,9 @@ if submit:
 if st.session_state['summary']:
     summ = st.session_state['summary']
 
-    # Dashboard
-    st.subheader("📊 Dashboard")
-
-    k1, k2, k3 = st.columns(3)
-
-    k1.metric("Your Screen Time", f"{summ['Your Screen Time (hrs)']} hrs")
-    k2.metric("Recommended Limit", f"{summ['Combined Recommended Limit (hrs)']} hrs")
-    k3.metric(
-        "Difference",
-        f"{round(summ['Your Screen Time (hrs)'] - summ['Combined Recommended Limit (hrs)'], 2)} hrs"
-    )
-
-    # ✅ FIX: Risk indicator INSIDE block
+    # -------------------------------
+    # Risk Indicator
+    # -------------------------------
     if summ['Your Screen Time (hrs)'] > 4.5:
         st.error("🔴 High Risk Zone")
     elif summ['Your Screen Time (hrs)'] > 3.5:
@@ -102,18 +92,26 @@ if st.session_state['summary']:
     else:
         st.success("🟢 Safe Zone")
 
+    # -------------------------------
+    # Chart
+    # -------------------------------
     import pandas as pd
 
-chart_data = pd.DataFrame({
-    "Type": ["Your Usage", "Recommended"],
-    "Hours": [
-        summ['Your Screen Time (hrs)'],
-        summ['Combined Recommended Limit (hrs)']
-    ]
-})
+    chart_data = pd.DataFrame({
+        "Type": ["Your Usage", "Recommended"],
+        "Hours": [
+            summ['Your Screen Time (hrs)'],
+            summ['Combined Recommended Limit (hrs)']
+        ]
+    })
 
-st.subheader("📊 Usage Comparison")
-st.bar_chart(chart_data.set_index("Type"))
+    st.subheader("📊 Usage Comparison")
+    st.bar_chart(chart_data.set_index("Type"))
+
+    # -------------------------------
+    # Continue your report BELOW
+    # -------------------------------
+    st.subheader("📊 Your Report")
     # -------------------------------
     # DETAILED REPORT
     # -------------------------------
