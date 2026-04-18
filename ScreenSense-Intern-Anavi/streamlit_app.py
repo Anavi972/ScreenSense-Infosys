@@ -31,15 +31,19 @@ if 'recs' not in st.session_state:
 # -------------------------------
 # INPUT FORM
 # -------------------------------
-with st.form("input_form"):
+col1, col2 = st.columns(2)
+
+with col1:
     age = st.number_input("Age", min_value=5, max_value=120, value=22)
     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
     device = st.selectbox("Primary Device", ["Smartphone", "Laptop", "Tablet", "TV"])
-    total_screen = st.number_input("Avg daily screen time (hrs)", value=5.0, step=0.25)
-    edu = st.number_input("Educational time (hrs) — optional", value=2.0, step=0.25)
-    rec = st.number_input("Recreational time (hrs) — optional", value=max(0.0, total_screen - 2.0), step=0.25)
 
-    submit = st.form_submit_button("🚀 Get Recommendations")
+with col2:
+    total_screen = st.number_input("Avg daily screen time (hrs)", value=5.0, step=0.25)
+    edu = st.number_input("Educational time (hrs)", value=2.0, step=0.25)
+    rec = st.number_input("Recreational time (hrs)", value=max(0.0, total_screen - 2.0), step=0.25)
+
+submit = st.button("🚀 Analyze My Screen Usage")
 
 # -------------------------------
 # MAIN LOGIC
