@@ -82,15 +82,23 @@ if submit:
 if st.session_state['summary']:
     summ = st.session_state['summary']
 
-st.subheader("📊 Dashboard")
+    # -------------------------------
+    # DASHBOARD KPIs
+    # -------------------------------
+    st.subheader("📊 Dashboard")
 
-k1, k2, k3 = st.columns(3)
+    k1, k2, k3 = st.columns(3)
 
-k1.metric("Your Screen Time", f"{summ['Your Screen Time (hrs)']} hrs")
-k2.metric("Recommended Limit", f"{summ['Combined Recommended Limit (hrs)']} hrs")
-k3.metric("Difference", f"{round(summ['Your Screen Time (hrs)'] - summ['Combined Recommended Limit (hrs)'],2)} hrs")
-    
+    k1.metric("Your Screen Time", f"{summ['Your Screen Time (hrs)']} hrs")
+    k2.metric("Recommended Limit", f"{summ['Combined Recommended Limit (hrs)']} hrs")
+    k3.metric(
+        "Difference",
+        f"{round(summ['Your Screen Time (hrs)'] - summ['Combined Recommended Limit (hrs)'], 2)} hrs"
+    )
 
+    # -------------------------------
+    # DETAILED REPORT
+    # -------------------------------
     st.subheader("📊 Your Report")
 
     col1, col2 = st.columns(2)
