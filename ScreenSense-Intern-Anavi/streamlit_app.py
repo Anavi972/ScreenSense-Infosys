@@ -109,10 +109,6 @@ if st.session_state['summary']:
     st.bar_chart(chart_data.set_index("Type"))
 
     # -------------------------------
-    # Continue your report BELOW
-    # -------------------------------
-    st.subheader("📊 Your Report")
-    # -------------------------------
     # DETAILED REPORT
     # -------------------------------
     st.subheader("📊 Your Report")
