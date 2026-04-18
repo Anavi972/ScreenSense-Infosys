@@ -3,6 +3,9 @@ import tempfile
 import os
 from recommender import recommendation_system
 from report_generator import create_pdf_report 
+import sys
+import os
+sys.path.append(os.path.abspath("."))
 
 st.title("Screen-Sense — Interactive")
 
