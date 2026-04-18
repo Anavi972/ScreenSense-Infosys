@@ -95,7 +95,12 @@ if st.session_state['summary']:
         "Difference",
         f"{round(summ['Your Screen Time (hrs)'] - summ['Combined Recommended Limit (hrs)'], 2)} hrs"
     )
-
+if summ['Your Screen Time (hrs)'] > 4.5:
+    st.error("🔴 High Risk Zone")
+elif summ['Your Screen Time (hrs)'] > 3.5:
+    st.warning("🟠 Moderate Risk Zone")
+else:
+    st.success("🟢 Safe Zone")
     # -------------------------------
     # DETAILED REPORT
     # -------------------------------
