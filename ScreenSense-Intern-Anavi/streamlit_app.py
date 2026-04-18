@@ -101,6 +101,19 @@ if st.session_state['summary']:
         st.warning("🟠 Moderate Risk Zone")
     else:
         st.success("🟢 Safe Zone")
+
+    import pandas as pd
+
+chart_data = pd.DataFrame({
+    "Type": ["Your Usage", "Recommended"],
+    "Hours": [
+        summ['Your Screen Time (hrs)'],
+        summ['Combined Recommended Limit (hrs)']
+    ]
+})
+
+st.subheader("📊 Usage Comparison")
+st.bar_chart(chart_data.set_index("Type"))
     # -------------------------------
     # DETAILED REPORT
     # -------------------------------
